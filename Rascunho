@@ -1,0 +1,38 @@
+# Pacotes
+library(haven)
+library(dplyr)
+library(naniar)
+# Diretorio
+setwd("C:\\Users\\LES\\Downloads")
+
+# Legenda
+# DT_INTER : Data
+# casos_resp (Variável alvo): N de internações no dia
+
+# (Covariáveis)
+# temperatura_c_media :
+# pm25_ugm3_medio : material particular do fino
+# umidade_relativa_percentual_media: umidade
+# vento_velocidade_ms_media : Velocidade do vento
+
+# Base de Dados Original
+base = readRDS("base_resp.rds")
+summary(base)
+gg_miss_var(base)
+
+
+# Base de Dados Treino e Teste
+# Teste: 3 meses finais da base original (Set-Out-Nov)
+base_treino = base |> filter(DT_INTER <= "2019-08-31") |> 
+  select(DT_INTER,temperatura_c_media,pm25_ugm3_medio,
+         umidade_relativa_percentual_media,vento_velocidade_ms_media)
+
+base_teste = base |> filter(DT_INTER > "2019-08-31")|> 
+  select(DT_INTER,temperatura_c_media,pm25_ugm3_medio,
+         umidade_relativa_percentual_media,vento_velocidade_ms_media)
+
+# Definições
+# Definir o Lag da Variável resposta
+# Definir o Lag das Covariáveis
+
+# Definir as escalas das covariáveis e variável resposta
