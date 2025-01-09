@@ -1,0 +1,32 @@
+---
+title: "MODELAGEM E PREVISÃO DO NÚMERO DE CASOS DE INTERNAÇÃO POR DOENÇAS DO APARELHO RESPIRATÓRIO NA CIDADE DE SÃO PAULO VIA LSTM"
+author: "Luís Philipe Craveiro Mendes e Matheus Jun Onishi da Silva"
+format: pdf
+editor: visual
+bibliography: "https://api.citedrive.com/bib/d73f78ec-e44c-4be4-b12f-8accf86f8d2e/references.bib?x=eyJpZCI6ICJkNzNmNzhlYy1lNDRjLTRiZTQtYjEyZi04YWNjZjg2ZjhkMmUiLCAidXNlciI6ICI4NzMwIiwgInNpZ25hdHVyZSI6ICJlN2IxNmEwMzBlNGNkZTA3OWJmZjg5MDM5Yzk0MDI2MzAyZGU1MTg5NTI3ZDllYmY3OTUzOWU5Mjk0MWRlMjczIn0="
+---
+
+# Introdução
+
+Compreende-se que há uma estreita relação entre fatores climáticos e a saúde humana, especialmente no que se refere ao sistema respiratório. Condições climáticas adversas podem aumentar a ocorrência de internações hospitalares e, em casos mais graves, levar a óbitos [@A_Abdo_2012]. No Brasil, muitas cidades estão em processo de urbanização ou já apresentam intensa urbanização, o que agrava os problemas de saúde pública devido à formação de ilhas de calor, poluição atmosférica e outros fatores climáticos que contribuem para o aumento de doenças respiratórias [@S_C._2020].
+
+Na área de saúde pública, prever o número de internações esperadas em um determinado período é essencial para o planejamento de recursos e a formulação de políticas. Além disso, compreender o impacto das variáveis explicativas no modelo é crucial para a identificação de medidas preventivas. Neste trabalho, limitamo-nos ao desenvolvimento de um modelo capaz de prever o número de internações, utilizando uma classe de redes neurais apropriada para séries temporais e utilizando covariáveis climáticas.
+
+O estudo concentra-se na modelagem do número de internações por doenças do sistema respiratório na cidade de São Paulo entre os anos de 2018 e 2019. Foram utilizadas como covariáveis a umidade relativa do ar, a temperatura e a concentração de material particulado fino ($PM_{2.5}$). Os dados de internações foram obtidos no DATASUS, enquanto as informações climáticas foram extraídas do Sistema Integrado de Serviços Ambientais (SISAM). Para a modelagem, foi empregado o modelo de redes neurais de Memória Longa de Curto Prazo (LSTM) [@L_Hochreiter_1997], devido à sua capacidade de capturar padrões temporais complexos nos dados.
+
+# Materiais e Métodos
+
+## Memória Longa de Curto Prazo (LSTM)
+
+O LSTM é um tipo de rede neural da família de Redes Neurais Recorrentes que funcionam como uma espécie de diversos "mensageiros" que processam os dados que receberam, e transmitem isso para outros mensageiros. Isso cria uma espécie de memória que é compartilhada entre eles e pode fornecer bons resultados como saídas. Essa classe de redes neurais é utilizada em diversos contextos como trabalhos de tradução, reconhecimento de voz etc. [@Understanding_LSTM_networks].
+
+# Resultados
+
+
+#Conclusão
+
+
+# Referências
+
+::: {#refs}
+:::
