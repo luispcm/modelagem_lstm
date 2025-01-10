@@ -22,7 +22,8 @@ O LSTM é um tipo de rede neural da família de Redes Neurais Recorrentes que fu
 
 Redes Neurais Recorrentes (RNNs) conseguem realizar boas previsões considerando o impacto de informações recentes, entretanto, quando há informações importantes disponíveis no histórico dos dados que impactam em previsões futuras em intervalos cada vez maiores, essa classe de redes neurais se torna ineficiente na tarefa de realizar previsões, visto que não conseguem resgatar esse termo longínguo que impacta a previsão desejada com eficiência. Ou seja, quanto maior o \textit{lag} entre a informação que deseja ser prevista e a informação relevante para tal previsão, menos capaz essa classe de redes realizar previsões precisas. [@L_Bengio_1994] explora essas ideais com mais detalhes. Porém, para o LSTM, o problema de resgatar dados históricos longíquos é solucionado.
 
-O principal objetivo do LSTM é justamente conseguir manter a influência de dados passados em estimativas futuras. Diferentemente de redes neurais recorrentes padrões, ele tem uma estrutura mais complexa.  Veja abaixo a ilustração de uma RNN padrão com a única função de ativação tangente hiperbólica:
+O principal objetivo do LSTM é justamente conseguir manter a influência de dados passados em estimativas futuras. Diferentemente de redes neurais recorrentes padrões, ele tem uma estrutura mais complexa. Veja abaixo a ilustração de uma RNN padrão com a única função de ativação tangente hiperbólica:
+
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
 #| echo: false
 #| warning: false
@@ -32,6 +33,7 @@ knitr::include_graphics("RNN_padrao.png")
 ```
 
 Agora veja a estrutura de um módulo do LSTM que será abordado com mais detalhes a diante:
+
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
 #| echo: false
 #| warning: false
@@ -53,6 +55,7 @@ knitr::include_graphics("interconexao_info.png")
 Note, pela primeira figura acima considerando $C_{t-1}$ uma informação que está passando por um módulo, que $C_{t-1}$ passando por meio de transformações lineares. Primeiramente ele é multiplicado por uma saída de uma função de ativação sigmóide, ou seja, tal informação ganha um peso considerando valores entre 0 e 1, já que estes valores são a imagem da função sigmóide. Em seguida, $C_{t-1}$ passa por mais duas operações que veremos com mais detalhes futuramente. Por enquanto, foquemos nessa primeira operação.
 
 A partir do que foi discutido, podemos entender que a função sigmóide filtra parte da informação contida em $C_{t-1}$ ao multiplicar por valores entre 0 e 1. Veja abaixo o destaque para essa operação inicial:
+
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
 #| echo: false
 #| warning: false
@@ -61,7 +64,36 @@ A partir do que foi discutido, podemos entender que a função sigmóide filtra 
 knitr::include_graphics("primeira_funcao.png")
 ```
 
-\textcolor{red}{cotinuar a partir daqui com base no primeiro parágrafo de "Step-by-Step LSTM Walk Through" do site de base}
+Considerando isso, com base nos valores $h_{t-1}$ e $x_t$, ele decide o quanto de informação de $C_{t-1}$ irá passar por meio da função sigmóide, isto é, $f_t = \sigma(w_f[h_{t-1}, x_t] + \theta_f)$, o qual $w_f$ é um peso sináptico e $\theta_f$ é um viés. Após esse passo de filtro de quanta informação é útil, temos o segundo passo que é o processamento de uma nova informação que deve ser acrescentada a $C_{t-1}$.
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("segunda_funcao.png")
+```
+
+Esse novo processamento é feito por meio da função de ativação hiperbólica, isto é, $\tilde{C_t} = tanh(w_C[h_{t-1},x_t] + \theta_C)$, com peso sináptico e viés, respectivamente, $w_C$ e $\theta_C$ que é, assim como $C_{t-1}$, ponderada por meio da saída da função sigmóide $i_t = \sigma(w_i[h_{t-1},x_t] + \theta_i)$, com peso sináptico e viés, respectivamente, $w_i$ e $\theta_i$ que decide o quanto dessa nova informação será acrescentada a antiga ponderada $C_{t-1}f_t$. Após todo esse processo, ambas informações são somadas, gerando a nova informação $C_t = f_tC_{t-1} + i_t\tilde{C_t}$ que está ilustrada abaixo.
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("segunda_funcao_saida.png")
+```
+A partir da obtenção de $C_t$, temos tudo que precisamos para emitir a saída final, ela será o $C_t$ filtrado. Primeiramente, $C_t$ passa por uma função sigmóide a qual decide que informações estarão disponíveis na saíde, ou seja, há um filtro do que é menos e mais provável, já que a imagem desta função é para valores entre 0 e 1. Ao mesmo tempo, o mesmo $C_t$ passa por uma função tangente hiperbólica que tem imagem nos valores de -1 a 1. A saída da função tangente hiperbólica é multiplicada pela saída da função sigmóide, consequentemente a informação dada pela função tangente hiperbólica é filtrada. Esse processo final é ilutrado na figura abaixo.
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("saida_final.png")
+```
+
+Tal saída é disposta como uma resposta do modelo para um dado ponto e também é replicada para o módulo seguinte onde o processo irá se repetir para o tempo $t+1$.
+
+
 
 
 
