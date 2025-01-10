@@ -20,11 +20,56 @@ O estudo concentra-se na modelagem do número de internações por doenças do s
 
 O LSTM é um tipo de rede neural da família de Redes Neurais Recorrentes que funcionam como uma espécie de diversos "mensageiros" que processam os dados que receberam, e transmitem isso para outros mensageiros. Isso cria uma espécie de memória que é compartilhada entre eles e pode fornecer bons resultados como saídas. Essa classe de redes neurais é utilizada em diversos contextos como trabalhos de tradução, reconhecimento de voz etc. [@Understanding_LSTM_networks].
 
+Redes Neurais Recorrentes (RNNs) conseguem realizar boas previsões considerando o impacto de informações recentes, entretanto, quando há informações importantes disponíveis no histórico dos dados que impactam em previsões futuras em intervalos cada vez maiores, essa classe de redes neurais se torna ineficiente na tarefa de realizar previsões, visto que não conseguem resgatar esse termo longínguo que impacta a previsão desejada com eficiência. Ou seja, quanto maior o \textit{lag} entre a informação que deseja ser prevista e a informação relevante para tal previsão, menos capaz essa classe de redes realizar previsões precisas. [@L_Bengio_1994] explora essas ideais com mais detalhes. Porém, para o LSTM, o problema de resgatar dados históricos longíquos é solucionado.
+
+O principal objetivo do LSTM é justamente conseguir manter a influência de dados passados em estimativas futuras. Diferentemente de redes neurais recorrentes padrões, ele tem uma estrutura mais complexa.  Veja abaixo a ilustração de uma RNN padrão com a única função de ativação tangente hiperbólica:
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("RNN_padrao.png")
+```
+
+Agora veja a estrutura de um módulo do LSTM que será abordado com mais detalhes a diante:
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("estrutura_lstm.png")
+```
+
+### A Interconexão das Informações
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("interconexao_info.png")
+```
+
+Note, pela primeira figura acima considerando $C_{t-1}$ uma informação que está passando por um módulo, que $C_{t-1}$ passando por meio de transformações lineares. Primeiramente ele é multiplicado por uma saída de uma função de ativação sigmóide, ou seja, tal informação ganha um peso considerando valores entre 0 e 1, já que estes valores são a imagem da função sigmóide. Em seguida, $C_{t-1}$ passa por mais duas operações que veremos com mais detalhes futuramente. Por enquanto, foquemos nessa primeira operação.
+
+A partir do que foi discutido, podemos entender que a função sigmóide filtra parte da informação contida em $C_{t-1}$ ao multiplicar por valores entre 0 e 1. Veja abaixo o destaque para essa operação inicial:
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("primeira_funcao.png")
+```
+
+\textcolor{red}{cotinuar a partir daqui com base no primeiro parágrafo de "Step-by-Step LSTM Walk Through" do site de base}
+
+
+
 # Resultados
 
+\textcolor{red}{lembre-se de falar sobre a base de dados no fim da seção anterior}
 
 #Conclusão
-
 
 # Referências
 
