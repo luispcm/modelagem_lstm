@@ -65,6 +65,7 @@ knitr::include_graphics("primeira_funcao.png")
 ```
 
 Considerando isso, com base nos valores $h_{t-1}$ e $x_t$, ele decide o quanto de informação de $C_{t-1}$ irá passar por meio da função sigmóide, isto é, $f_t = \sigma(w_f[h_{t-1}, x_t] + \theta_f)$, o qual $w_f$ é um peso sináptico e $\theta_f$ é um viés. Após esse passo de filtro de quanta informação é útil, temos o segundo passo que é o processamento de uma nova informação que deve ser acrescentada a $C_{t-1}$.
+
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
 #| echo: false
 #| warning: false
@@ -74,6 +75,7 @@ knitr::include_graphics("segunda_funcao.png")
 ```
 
 Esse novo processamento é feito por meio da função de ativação hiperbólica, isto é, $\tilde{C_t} = tanh(w_C[h_{t-1},x_t] + \theta_C)$, com peso sináptico e viés, respectivamente, $w_C$ e $\theta_C$ que é, assim como $C_{t-1}$, ponderada por meio da saída da função sigmóide $i_t = \sigma(w_i[h_{t-1},x_t] + \theta_i)$, com peso sináptico e viés, respectivamente, $w_i$ e $\theta_i$ que decide o quanto dessa nova informação será acrescentada a antiga ponderada $C_{t-1}f_t$. Após todo esse processo, ambas informações são somadas, gerando a nova informação $C_t = f_tC_{t-1} + i_t\tilde{C_t}$ que está ilustrada abaixo.
+
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
 #| echo: false
 #| warning: false
@@ -81,6 +83,7 @@ Esse novo processamento é feito por meio da função de ativação hiperbólica
 
 knitr::include_graphics("segunda_funcao_saida.png")
 ```
+
 A partir da obtenção de $C_t$, temos tudo que precisamos para emitir a saída final, ela será o $C_t$ filtrado. Primeiramente, $C_t$ passa por uma função sigmóide a qual decide que informações estarão disponíveis na saíde, ou seja, há um filtro do que é menos e mais provável, já que a imagem desta função é para valores entre 0 e 1. Ao mesmo tempo, o mesmo $C_t$ passa por uma função tangente hiperbólica que tem imagem nos valores de -1 a 1. A saída da função tangente hiperbólica é multiplicada pela saída da função sigmóide, consequentemente a informação dada pela função tangente hiperbólica é filtrada. Esse processo final é ilutrado na figura abaixo.
 
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
@@ -93,15 +96,141 @@ knitr::include_graphics("saida_final.png")
 
 Tal saída é disposta como uma resposta do modelo para um dado ponto e também é replicada para o módulo seguinte onde o processo irá se repetir para o tempo $t+1$.
 
-
-
-
-
 # Resultados
 
-\textcolor{red}{lembre-se de falar sobre a base de dados no fim da seção anterior}
+Nesta aplicação, dedicamo-nos a apresentar o efeito da poluição, mais especificamente o efeito do material particulado fino ($PM_{2.5}$), juntamente com a umidade relativa do ar e a temperatura, no número de internações de pessoas com doenças do aparelho respiratório na cidade de São Paulo - SP, no período de 01/01/2018 a 30/11/2019. Os dados ambientais foram coletados por meio do Sistema Integrado de Serviços Ambientais (SISAM) e os dados sobre internações por doenças respiratórias foram obtidos por meio do DATASUS.
 
-#Conclusão
+Ademais, na base de dados, o $PM_{2.5}$ era registrado a cada 12 horas em 2019 por meio das estações meteorológicas, enquanto a umidade e a temperatura, outras covariáveis utilizadas no modelo, eram registradas a cada 6 horas bem como o $PM_{2.5}$, mas somente em 2018. Considerando isso, calculamos a média diária de cada uma delas.
+
+## Análise Descritiva
+
+Abaixo pode ser visto o comportamento do número de internações de pessoas com doenças do aparelho respiratório.
+
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+base_resp = readRDS("base_resp.rds")
+library(tidyverse)
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = casos_resp)) +
+  labs(x = "Mês-Ano",
+       y = "N° de internações",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 12),
+        legend.text=element_text(size= 12),
+        legend.title = element_text(size = 12),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        axis.title.y = element_text(size = 12)) +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month"))
+```
+Nota-se que os períodos de maiores concentrações dos poluentes estão nos meios dos anos.
+
+Abaixo temos a umidade relativa do ar:
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = umidade_relativa_percentual_media)) +
+  labs(x = "Mês-Ano",
+       y = "Umidade Relativa do Ar (%)",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 12),
+        legend.text=element_text(size= 12),
+        legend.title = element_text(size = 12),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        axis.title.y = element_text(size = 12)) +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month"))
+```
+Com altas porcentagens principalmente no ano de 2018, com um comportamento atípico.
+
+Já para a temperatura média diária, temos:
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = temperatura_c_media)) +
+  labs(x = "Mês-Ano",
+       y = "Temperatura (°C)",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 12),
+        legend.text=element_text(size= 12),
+        legend.title = element_text(size = 12),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        axis.title.y = element_text(size = 12)) +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month"))
+```
+
+Curiosamente níveis intermediários de temperatura parece ter uma relação positiva com o número de internações, pois parece que há um aumento dos números de internações nesses períodos sem temperaturas mais extremas.
+
+Por fim, podemos visualizar essas variáveis em um mesmo gráfico, onde as séries estão padronizadas pelos seus máximos, dessa forma elas ficam no intervalo [0,1]:
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = pm25_ugm3_medio/max(pm25_ugm3_medio),
+                color = "pm25")) +
+  geom_line(aes(y = umidade_relativa_percentual_media/(max(umidade_relativa_percentual_media)),color = "umidade")) +
+  geom_line(aes(y = casos_resp/(max(casos_resp)),color = "Y")) +
+  geom_line(aes(y = temperatura_c_media/(max(temperatura_c_media)),color = "temperatura")) +
+  labs(x = "Mês-Ano",
+       y = "",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 12),
+        legend.text=element_text(size= 7),
+        legend.title = element_text(size = 12),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        legend.position = "bottom") +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month")) +
+  scale_color_manual(values = c("pm25" = "green",
+                                "Y" = "black",
+                                "umidade" = "darkblue",
+                                "temperatura" = "red"),
+                     labels = c(expression(paste("PM2,5 (", mu, "g/m"^3,")")),
+                                "Temperatura (°C)",
+                                "Umidade Relativa do Ar (%)",
+                                "N° de interações"))
+```
+
+Realmente parece ter uma relação entre temperaturas intermediárias e o número de internações, o gráfico acima torna isso mais evidente. 
+
+# Conclusão
 
 # Referências
 
