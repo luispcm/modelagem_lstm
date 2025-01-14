@@ -187,8 +187,7 @@ ggplot(base_resp,
                             to = max(base_resp$DT_INTER),
                             by = "1 month"))
 ```
-
-Curiosamente níveis intermediários de temperatura parece ter uma relação positiva com o número de internações, pois parece que há um aumento dos números de internações nesses períodos sem temperaturas mais extremas.
+Na Figura acima, podemos ver claramente os períodos de inverno e verão de acordo com o comportamento bem definido.
 
 Por fim, podemos visualizar essas variáveis em um mesmo gráfico, onde as séries estão padronizadas pelos seus máximos, dessa forma elas ficam no intervalo [0,1]:
 ```{r, fig.pos='H', out.width="100%"}
@@ -227,9 +226,6 @@ ggplot(base_resp,
                                 "Umidade Relativa do Ar (%)",
                                 "N° de interações"))
 ```
-
-Realmente parece ter uma relação entre temperaturas intermediárias e o número de internações, o gráfico acima torna isso mais evidente. 
-
 # Conclusão
 
 # Referências
