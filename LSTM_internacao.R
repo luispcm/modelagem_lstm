@@ -1,11 +1,11 @@
 # Pacotes
 {
-library(haven)
-library(dplyr)
-library(naniar)
-library(ggplot2)
-library(caret)
-library(TSLSTMplus)
+  library(haven)
+  library(dplyr)
+  library(naniar)
+  library(ggplot2)
+  library(caret)
+  library(TSLSTMplus)
 }
 
 # Diretorio
@@ -29,13 +29,9 @@ gg_miss_var(base)
 
 # Base de Dados Treino e Teste
 # Teste: 3 meses finais da base original (Set-Out-Nov)
-base_treino = base |> filter(DT_INTER <= "2019-08-31") |> 
-  select(DT_INTER,temperatura_c_media,pm25_ugm3_medio,
-         umidade_relativa_percentual_media,vento_velocidade_ms_media,casos_resp)
+base_treino = base |> filter(DT_INTER <= "2019-08-31") 
 
-base_teste = base |> filter(DT_INTER > "2019-08-31")|> 
-  select(DT_INTER,temperatura_c_media,pm25_ugm3_medio,
-         umidade_relativa_percentual_media,vento_velocidade_ms_media,casos_resp)
+base_teste = base |> filter(DT_INTER > "2019-08-31")
 
 # Definições
 # Definir o Lag da Variável resposta
@@ -47,84 +43,142 @@ base_teste = base |> filter(DT_INTER > "2019-08-31")|>
 ### Treinamento do Modelo
 
 # Variavel resposta e Covariavel da Base Treino
-Y_treino = base_treino |> select(casos_resp) |> as.matrix()
-X_treino = base_treino |> select(-c(casos_resp,DT_INTER)) |> as.matrix()
+Y = base |> 
+  select(casos_resp) |> as.matrix()
+
+X = base |> 
+  select(DT_INTER,temperatura_c_media,pm25_ugm3_medio,casos_resp) %>% 
+  select(-c(casos_resp,DT_INTER)) |> as.matrix()
+
+t = nrow(base_treino)
+p = nrow(base) - nrow(base_treino)
 
 
 # Parametros do Modelo
-lag = 7
+lag = 3
 
 # Modelo
+set.seed(122054005)
 lstm <- ts.lstm(
-  ts = Y_treino,
-  xreg = X_treino,
+  ts = Y[1:t],
+  xreg = X[1:t,],
   tsLag = lag,
   xregLag = lag,
-  LSTMUnits = 50, 
-  ScaleInput = NULL,
-  ScaleOutput = "minmax",
-  LSTMActivationFn = "relu",
-  LSTMRecurrentActivationFn ="sigmoid" )
+  LSTMUnits = c(40,20), 
+  ScaleInput = "minmax",
+  ScaleOutput = "minmax")
+  #LSTMActivationFn = "sigmoid",
+  #LSTMRecurrentActivationFn ="tanh" )
 
 ### Previsão do Treino
 # Previsao não interativa
 prev_treino = predict(lstm,
-                horizon = length(Y_treino), # Previsão para todos os períodos da base de teste
-                xreg = X_treino,           # Covariáveis usadas no treino
-                ts = Y_treino,             # Série temporal usada no treino
-                xreg.new = X_treino)         # Covariáveis da base de teste
+                      horizon = t, # Previsão para todos os períodos da base de teste
+                      xreg = X[1:t,],           # Covariáveis usadas no treino
+                      ts = Y[1:t],             # Série temporal usada no treino
+                      xreg.new = X[1:t,])         # Covariáveis da base de teste
 
 
 
 # Tabela para os grafico das previsões
-dados_prev_treino = data.frame(indice = 1:length(Y_treino),previsao = prev_treino,Y_treino)
+dados_prev_treino = data.frame(data = base$DT_INTER[1:t],previsao = prev_treino,Internacao = Y[1:t])
 
-
-dados_prev_treino |> ggplot(mapping = aes(x = indice )) +
+dados_prev_treino |> ggplot(mapping = aes(x = data )) +
   geom_line(mapping = aes(y = previsao),color = "red") +
-  geom_line(mapping = aes(y = casos_resp),color = "blue")
-
+  geom_line(mapping = aes(y = Internacao),color = "black") 
+#+ geom_line(mapping = aes(y = pred_int_treino),color = "blue")
 
 # Metricas
-postResample(pred = previ,obs = Y_treino)
-
-
-
-
-
-
-
-
-
-
-
-
+postResample(pred = dados_prev_treino$previsao,obs = Y[1:t])
 
 
 
 ### Previsões da base Teste
-Y_prev = base_teste |> select(casos_resp)|> as.matrix()
-X_prev = base_teste |> select(-c(casos_resp,DT_INTER))|> as.matrix()
 
-
-# Previsao não interativa
+#Previsao não interativa
 previ = predict(lstm,
-        horizon = length(Y_prev), # Previsão para todos os períodos da base de teste
-        xreg = X_treino,           # Covariáveis usadas no treino
-        ts = Y_treino,             # Série temporal usada no treino
-        xreg.new = X_prev)         # Covariáveis da base de teste
+               horizon = p, # Previsão para todos os períodos da base de teste
+               xreg = X[1:t,],           # Covariáveis usadas no treino
+               ts = Y[1:t],             # Série temporal usada no treino
+               xreg.new = X[(t+1):(t+p),])         # Covariáveis da base de teste
 
 
 
 # Tabela para os grafico das previsões
-dados_prev_n_int = data.frame(indice = 1:length(previ),previsao = previ,Y_prev)
+dados_prev_n_int = data.frame(data = base$DT_INTER[(t+1):(t+p)],previsao = previ,Internacao = Y[(t+1):(t+p)])
 
 
-dados_prev_n_int |> ggplot(mapping = aes(x = indice )) +
-  geom_line(mapping = aes(y = previsao),color = "red") +
-  geom_line(mapping = aes(y = casos_resp),color = "blue")
+# Previsão interativa
+pred_int = NULL
+for(i in (t+1):(t+p)){
+  pred_int = c(pred_int,
+               predict(lstm, 
+                       horizon = 1, 
+                       xreg = X[1:(i-1),], 
+                       ts = Y[1:(i-1)],
+                       xreg.new = X[i, , drop = F]))
+}
+
+dados_prev_n_int |> ggplot(mapping = aes(x = data )) +
+  geom_line(mapping = aes(y = Internacao,color = "Internação")) + 
+  geom_line(mapping = aes(y = pred_int,color = "Previsão Interativa"))+  # Previsão interativa
+  geom_line(mapping = aes(y = previsao,color = "Previsão Não Interativa")) + # Previsão n inter 
+  scale_color_manual(values = c("Internação" = "black", 
+                                "Previsão Interativa" = "blue", 
+                                "Previsão Não Interativa" = "red")) +
+  labs(color = "Legenda", y = "Valores", x = "Data") +
+  theme_minimal()
+postResample(pred = dados_prev_n_int$previsao,obs = Y[(t+1):(t+p)])
 
 
-# Metricas
-postResample(pred = previ,obs = Y_prev)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Parametros do Modelo
+lag = seq(5,12)
+neuron = seq(10,80,10)
+
+# Modelo
+for (l in 1:length(lag)) {
+  for (n in 1:length(neuron)) {
+    set.seed(122054005)
+    lstm <- ts.lstm(
+      ts = Y[1:t],
+      xreg = X[1:t,],
+      tsLag = l,
+      xregLag = l,
+      LSTMUnits = n, 
+      ScaleInput = NULL,
+      ScaleOutput = "minmax",
+      LSTMActivationFn = "relu",
+      LSTMRecurrentActivationFn ="sigmoid" )
+    # Previsao não interativa
+    previ = predict(lstm,
+                    horizon = p, # Previsão para todos os períodos da base de teste
+                    xreg = X[1:t,],           # Covariáveis usadas no treino
+                    ts = Y[1:t],             # Série temporal usada no treino
+                    xreg.new = X[(t+1):(t+p),])         # Covariáveis da base de teste
+    # Tabela para os grafico das previsões
+    dados_prev_n_int = data.frame(data = base$DT_INTER[(t+1):(t+p)],previsao = previ,Internacao = Y[(t+1):(t+p)])
+    # Previsão interativa
+    pred_int = NULL
+    for(i in (t+1):(t+p)){
+      pred_int = c(pred_int,
+                   predict(lstm, 
+                           horizon = 1, 
+                           xreg = X[1:(i-1),], 
+                           ts = Y[1:(i-1)],
+                           xreg.new = X[i, , drop = F]))
+    }
+    
+    grafico = dados_prev_n_int |> ggplot(mapping = aes(x = data )) +
+      geom_line(mapping = aes(y = previsao),color = "red") +
+      geom_line(mapping = aes(y = Internacao),color = "black") + 
+      geom_line(mapping = aes(y = pred_int),color = "blue")
+    cat("lag = ",l," Neuro = ",n)
+    grafico
+  }
+
+}
+
 
