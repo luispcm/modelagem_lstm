@@ -10,9 +10,9 @@ bibliography: "https://api.citedrive.com/bib/d73f78ec-e44c-4be4-b12f-8accf86f8d2
 
 Compreende-se que há uma estreita relação entre fatores climáticos e a saúde humana, especialmente no que se refere ao sistema respiratório. Condições climáticas adversas podem aumentar a ocorrência de internações hospitalares e, em casos mais graves, levar a óbitos [@A_Abdo_2012]. No Brasil, muitas cidades estão em processo de urbanização ou já apresentam intensa urbanização, o que agrava os problemas de saúde pública devido à formação de ilhas de calor, poluição atmosférica e outros fatores climáticos que contribuem para o aumento de doenças respiratórias [@S_C._2020].
 
-Na área de saúde pública, prever o número de internações esperadas em um determinado período é essencial para o planejamento de recursos e a formulação de políticas. Além disso, compreender o impacto das variáveis explicativas no modelo é crucial para a identificação de medidas preventivas. Neste trabalho, limitamo-nos ao desenvolvimento de um modelo capaz de prever o número de internações, utilizando uma classe de redes neurais apropriada para séries temporais e utilizando covariáveis climáticas.
+Na saúde pública, prever o número de internações esperadas em um determinado período é essencial para o planejamento de recursos e a formulação de políticas. Além disso, compreender o impacto das variáveis explicativas no modelo é crucial para a identificação de medidas preventivas. Neste trabalho, entretanto, limitamo-nos ao desenvolvimento de um modelo capaz de prever o número de internações, utilizando uma classe de redes neurais apropriada para séries temporais e utilizando covariáveis climáticas como base efetiva para criação de políticas públicas e previsão de cenários de maior exigência dos serviços de sáudes para atender pacientes com problemas respiratórios.
 
-O estudo concentra-se na modelagem do número de internações por doenças do sistema respiratório na cidade de São Paulo entre os anos de 2018 e 2019. Foram utilizadas como covariáveis a umidade relativa do ar, a temperatura e a concentração de material particulado fino ($PM_{2.5}$). Os dados de internações foram obtidos no DATASUS, enquanto as informações climáticas foram extraídas do Sistema Integrado de Serviços Ambientais (SISAM). Para a modelagem, foi empregado o modelo de redes neurais de Memória Longa de Curto Prazo (LSTM) [@L_Hochreiter_1997], devido à sua capacidade de capturar padrões temporais complexos nos dados.
+O estudo concentra-se na modelagem e previsão do número de internações por doenças do sistema respiratório na cidade de São Paulo entre os anos de 2018 e 2019. Foram utilizadas como covariáveis a umidade relativa do ar, a temperatura e a concentração de material particulado fino ($PM_{2.5}$). Os dados de internações foram obtidos no DATASUS, enquanto as informações climáticas foram extraídas do Sistema Integrado de Serviços Ambientais (SISAM). Para a modelagem, foi empregado o modelo de redes neurais de Memória Longa de Curto Prazo (LSTM) [@L_Hochreiter_1997], devido à sua capacidade de capturar padrões temporais complexos nos dados.
 
 # Materiais e Métodos
 
@@ -96,17 +96,19 @@ knitr::include_graphics("saida_final.png")
 
 Tal saída é disposta como uma resposta do modelo para um dado ponto e também é replicada para o módulo seguinte onde o processo irá se repetir para o tempo $t+1$.
 
-# Resultados
+## Base de Dados
 
 Nesta aplicação, dedicamo-nos a apresentar o efeito da poluição, mais especificamente o efeito do material particulado fino ($PM_{2.5}$), juntamente com a umidade relativa do ar e a temperatura, no número de internações de pessoas com doenças do aparelho respiratório na cidade de São Paulo - SP, no período de 01/01/2018 a 30/11/2019. Os dados ambientais foram coletados por meio do Sistema Integrado de Serviços Ambientais (SISAM) e os dados sobre internações por doenças respiratórias foram obtidos por meio do DATASUS.
 
 Ademais, na base de dados, o $PM_{2.5}$ era registrado a cada 12 horas em 2019 por meio das estações meteorológicas, enquanto a umidade e a temperatura, outras covariáveis utilizadas no modelo, eram registradas a cada 6 horas bem como o $PM_{2.5}$, mas somente em 2018. Considerando isso, calculamos a média diária de cada uma delas.
 
+# Resultados
+
 ## Análise Descritiva
 
 Abaixo pode ser visto o comportamento do número de internações de pessoas com doenças do aparelho respiratório.
 
-```{r, fig.pos='H', out.width="100%"}
+```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
 #| message: false
@@ -136,7 +138,7 @@ ggplot(base_resp,
 Nota-se que os períodos de maiores concentrações dos poluentes estão nos meios dos anos.
 
 Abaixo temos a umidade relativa do ar:
-```{r, fig.pos='H', out.width="100%"}
+```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
 #| message: false
@@ -163,7 +165,7 @@ ggplot(base_resp,
 Com altas porcentagens principalmente no ano de 2018, com um comportamento atípico.
 
 Já para a temperatura média diária, temos:
-```{r, fig.pos='H', out.width="100%"}
+```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
 #| message: false
@@ -190,7 +192,7 @@ ggplot(base_resp,
 Na Figura acima, podemos ver claramente os períodos de inverno e verão de acordo com o comportamento bem definido.
 
 Por fim, podemos visualizar essas variáveis em um mesmo gráfico, onde as séries estão padronizadas pelos seus máximos, dessa forma elas ficam no intervalo [0,1]:
-```{r, fig.pos='H', out.width="100%"}
+```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
 #| message: false
@@ -224,7 +226,7 @@ ggplot(base_resp,
                      labels = c(expression(paste("PM2,5 (", mu, "g/m"^3,")")),
                                 "Temperatura (°C)",
                                 "Umidade Relativa do Ar (%)",
-                                "N° de interações"))
+                                "N° de internações"))
 ```
 # Conclusão
 

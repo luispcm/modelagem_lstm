@@ -1,0 +1,237 @@
+---
+title: "MODELAGEM E PREVISÃO DO NÚMERO DE CASOS DE INTERNAÇÃO POR DOENÇAS DO APARELHO RESPIRATÓRIO NA CIDADE DE SÃO PAULO VIA LSTM"
+format: revealjs
+editor: visual
+title-slide-attributes:
+  style: "font-size: 24px;"
+bibliography: "https://api.citedrive.com/bib/d73f78ec-e44c-4be4-b12f-8accf86f8d2e/references.bib?x=eyJpZCI6ICJkNzNmNzhlYy1lNDRjLTRiZTQtYjEyZi04YWNjZjg2ZjhkMmUiLCAidXNlciI6ICI4NzMwIiwgInNpZ25hdHVyZSI6ICJlN2IxNmEwMzBlNGNkZTA3OWJmZjg5MDM5Yzk0MDI2MzAyZGU1MTg5NTI3ZDllYmY3OTUzOWU5Mjk0MWRlMjczIn0="
+---
+
+## Introdução
+
+ - Compreende-se que há uma estreita relação entre fatores climáticos e a saúde humana, especialmente no que se refere ao sistema respiratório. 
+ - Condições climáticas adversas podem aumentar a ocorrência de internações hospitalares e, em casos mais graves, levar a óbitos [@A_Abdo_2012].
+ 
+## Introdução
+
+ - Na saúde pública, prever o número de internações esperadas em um determinado período é essencial para criação de políticas públicas e previsão de cenários de maior exigência dos serviços de sáudes para atender pacientes com problemas respiratórios.
+ - Neste trabalho, fizemos um modelo capaz de prever o número de internações, utilizando uma classe de redes neurais apropriada para séries temporais, isto é, o LSTM.
+ - O estudo concentra-se na modelagem e previsão do número de internações por doenças do sistema respiratório na cidade de São Paulo entre os anos de 2018 e 2019.
+ 
+# Materiais e Métodos
+## Memória Longa de Curto Prazo (LSTM)
+
+- O LSTM é um tipo de rede neural da família de Redes Neurais Recorrentes (RNNs) que funcionam como uma espécie de diversos "mensageiros" que processam os dados que receberam, e transmitem isso para outros mensageiros.
+- Isso cria uma espécie de memória que é compartilhada entre eles e pode fornecer bons resultados como saídas.
+
+## Memória Longa de Curto Prazo (LSTM)
+
+- Devido a ineficiência das RNNs tradicionais não conseguirem manter as memórias por longos prazos surgiu o LSTM para superar esse problema [@L_Bengio_1994].
+- Diferentemente de redes neurais recorrentes padrões, ele tem uma estrutura mais complexa.
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="RNN Padrão. Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("RNN_padrao.png")
+```
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("estrutura_lstm.png")
+```
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("interconexao_info.png")
+```
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("primeira_funcao.png")
+```
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("segunda_funcao.png")
+```
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("segunda_funcao_saida.png")
+```
+
+## Memória Longa de Curto Prazo (LSTM)
+
+```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
+#| echo: false
+#| warning: false
+#| message: false
+
+knitr::include_graphics("saida_final.png")
+```
+
+## Base de Dadoss
+
+- Variável Alvo: Número de Internações por Doenças do Aparelho Respiratório;
+- Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média (Descartada);
+- Fontes: DATASUS e Sistema Integrado de Serviços Ambientais (SISAM);
+- Frequência: Diária;
+- Período: 01/01/2018 a 30/11/2019.
+- Local: São Paulo - SP
+
+# Resultados
+
+## Análise Descritiva
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+base_resp = readRDS("base_resp.rds")
+library(tidyverse)
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = casos_resp)) +
+  labs(x = "Mês-Ano",
+       y = "N° de internações",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 20),
+        axis.text = element_text(size = 20),
+        legend.text=element_text(size= 20),
+        legend.title = element_text(size = 20),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        axis.title.y = element_text(size = 20)) +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month"))
+```
+
+## Análise Descritiva
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = umidade_relativa_percentual_media)) +
+  labs(x = "Mês-Ano",
+       y = "Umidade Relativa do Ar (%)",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 20),
+        axis.text = element_text(size = 20),
+        legend.text=element_text(size= 20),
+        legend.title = element_text(size = 20),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        axis.title.y = element_text(size = 20)) +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month"))
+```
+
+## Análise Descritiva
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = temperatura_c_media)) +
+  labs(x = "Mês-Ano",
+       y = "Temperatura (°C)",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 20),
+        axis.text = element_text(size = 20),
+        legend.text=element_text(size= 20),
+        legend.title = element_text(size = 20),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        axis.title.y = element_text(size = 20)) +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month"))
+```
+
+## Análise Descritiva
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(base_resp,
+       aes(x = DT_INTER)) +
+  geom_line(aes(y = pm25_ugm3_medio/max(pm25_ugm3_medio),
+                color = "pm25")) +
+  geom_line(aes(y = umidade_relativa_percentual_media/(max(umidade_relativa_percentual_media)),color = "umidade")) +
+  geom_line(aes(y = casos_resp/(max(casos_resp)),color = "Y")) +
+  geom_line(aes(y = temperatura_c_media/(max(temperatura_c_media)),color = "temperatura")) +
+  labs(x = "Mês-Ano",
+       y = "",
+       colour = "") +
+  theme_minimal() +
+  theme(axis.title = element_text(size = 20),
+        axis.text = element_text(size = 20),
+        legend.text=element_text(size= 15),
+        legend.title = element_text(size = 20),
+        axis.text.x = element_text(angle = 90,
+                                   vjust = 0.5),
+        legend.position = "bottom") +
+  scale_x_date(labels = scales::date_format("%b-%Y"),
+               breaks = seq(from = min(base_resp$DT_INTER),
+                            to = max(base_resp$DT_INTER),
+                            by = "1 month")) +
+  scale_color_manual(values = c("pm25" = "green",
+                                "Y" = "black",
+                                "umidade" = "darkblue",
+                                "temperatura" = "red"),
+                     labels = c(expression(paste("PM2,5 (", mu, "g/m"^3,")")),
+                                "Temperatura (°C)",
+                                "Umidade Relativa do Ar (%)",
+                                "N° de internações"))
+```
+
+# Conclusão
+
+## Referências
+
+::: {#refs}
+:::
