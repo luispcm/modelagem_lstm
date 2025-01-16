@@ -9,25 +9,26 @@ bibliography: "https://api.citedrive.com/bib/d73f78ec-e44c-4be4-b12f-8accf86f8d2
 
 ## Introdução
 
- - Compreende-se que há uma estreita relação entre fatores climáticos e a saúde humana, especialmente no que se refere ao sistema respiratório. 
- - Condições climáticas adversas podem aumentar a ocorrência de internações hospitalares e, em casos mais graves, levar a óbitos [@A_Abdo_2012].
- 
+-   Compreende-se que há uma estreita relação entre fatores climáticos e a saúde humana, especialmente no que se refere ao sistema respiratório.
+-   Condições climáticas adversas podem aumentar a ocorrência de internações hospitalares e, em casos mais graves, levar a óbitos [@A_Abdo_2012].
+
 ## Introdução
 
- - Na saúde pública, prever o número de internações esperadas em um determinado período é essencial para criação de políticas públicas e previsão de cenários de maior exigência dos serviços de sáudes para atender pacientes com problemas respiratórios.
- - Neste trabalho, fizemos um modelo capaz de prever o número de internações, utilizando uma classe de redes neurais apropriada para séries temporais, isto é, o LSTM.
- - O estudo concentra-se na modelagem e previsão do número de internações por doenças do sistema respiratório na cidade de São Paulo entre os anos de 2018 e 2019.
- 
+-   Na saúde pública, prever o número de internações esperadas em um determinado período é essencial para criação de políticas públicas e previsão de cenários de maior exigência dos serviços de sáudes para atender pacientes com problemas respiratórios.
+-   Neste trabalho, fizemos um modelo capaz de prever o número de internações, utilizando uma classe de redes neurais apropriada para séries temporais, isto é, o LSTM.
+-   O estudo concentra-se na modelagem e previsão do número de internações por doenças do sistema respiratório na cidade de São Paulo entre os anos de 2018 e 2019.
+
 # Materiais e Métodos
-## Memória Longa de Curto Prazo (LSTM)
-
-- O LSTM é um tipo de rede neural da família de Redes Neurais Recorrentes (RNNs) que funcionam como uma espécie de diversos "mensageiros" que processam os dados que receberam, e transmitem isso para outros mensageiros.
-- Isso cria uma espécie de memória que é compartilhada entre eles e pode fornecer bons resultados como saídas.
 
 ## Memória Longa de Curto Prazo (LSTM)
 
-- Devido a ineficiência das RNNs tradicionais não conseguirem manter as memórias por longos prazos surgiu o LSTM para superar esse problema [@L_Bengio_1994].
-- Diferentemente de redes neurais recorrentes padrões, ele tem uma estrutura mais complexa.
+-   O LSTM é um tipo de rede neural da família de Redes Neurais Recorrentes (RNNs) que funcionam como uma espécie de diversos "mensageiros" que processam os dados que receberam, e transmitem isso para outros mensageiros.
+-   Isso cria uma espécie de memória que é compartilhada entre eles e pode fornecer bons resultados como saídas.
+
+## Memória Longa de Curto Prazo (LSTM)
+
+-   Devido a ineficiência das RNNs tradicionais não conseguirem manter as memórias por longos prazos surgiu o LSTM para superar esse problema [@L_Bengio_1994].
+-   Diferentemente de redes neurais recorrentes padrões, ele tem uma estrutura mais complexa.
 
 ## Memória Longa de Curto Prazo (LSTM)
 
@@ -101,16 +102,17 @@ knitr::include_graphics("saida_final.png")
 
 ## Base de Dadoss
 
-- Variável Alvo: Número de Internações por Doenças do Aparelho Respiratório;
-- Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média (Descartada);
-- Fontes: DATASUS e Sistema Integrado de Serviços Ambientais (SISAM);
-- Frequência: Diária;
-- Período: 01/01/2018 a 30/11/2019.
-- Local: São Paulo - SP
+-   Variável Alvo: Número de Internações por Doenças do Aparelho Respiratório;
+-   Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média (Descartada);
+-   Fontes: DATASUS e Sistema Integrado de Serviços Ambientais (SISAM);
+-   Frequência: Diária;
+-   Período: 01/01/2018 a 30/11/2019.
+-   Local: São Paulo - SP
 
 # Resultados
 
 ## Análise Descritiva
+
 ```{r, fig.pos='H', out.width="100%"}
 #| echo: false
 #| warning: false
@@ -140,6 +142,7 @@ ggplot(base_resp,
 ```
 
 ## Análise Descritiva
+
 ```{r, fig.pos='H', out.width="100%"}
 #| echo: false
 #| warning: false
@@ -166,6 +169,7 @@ ggplot(base_resp,
 ```
 
 ## Análise Descritiva
+
 ```{r, fig.pos='H', out.width="100%"}
 #| echo: false
 #| warning: false
@@ -192,6 +196,7 @@ ggplot(base_resp,
 ```
 
 ## Análise Descritiva
+
 ```{r, fig.pos='H', out.width="100%"}
 #| echo: false
 #| warning: false
@@ -229,7 +234,52 @@ ggplot(base_resp,
                                 "N° de internações"))
 ```
 
-# Conclusão
+# Resultados
+
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+load("LSTM_intenacao.Rdata")
+
+g_treino_completo
+```
+
+| Modelo                      | RMSE    | Rsquared | MAE     |
+|-----------------------------|---------|----------|---------|
+| Modelo Completo (lag = 3)   | 42,1282 | 0,0933   | 33,7120 |
+| Modelo s/ Umidade (lag = 3) | 42,1282 | 0,0933   | 33,7120 |
+| Modelo s/Umidade (lag = 7)  | 55,9767 | 0,0079   | 42,6284 |
+| Modelo s/Umidade (lag = 1)  | 45,8886 | 0,0805   | 38,0505 |
+
+~Tabela:\ Métricas\ do\ modelo\ da\ base\ treino\ (Jan\ de\ 2018\ a\ Ago\ de\ 2019).~
+
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+base = readRDS("base_resp.rds")
+
+# Base de Dados Treino e Teste
+# Teste: 3 meses finais da base original (Set-Out-Nov)
+load("LSTM_intenacao.Rdata")
+
+g_LSTM_completo
+g_LSTM_sUmidade
+g_LSTM_lag7
+g_LSTM_lag1
+```
+
+| Modelo                      | RMSE    | Rsquared | MAE     |
+|-----------------------------|---------|----------|---------|
+| Modelo Completo (lag = 3)   | 25,6221 | 0,3163   | 20,0272 |
+| Modelo s/ Umidade (lag = 3) | 25,6221 | 0,3163   | 20,0272 |
+| Modelo s/Umidade (lag = 7)  | 23,0609 | 0,4388   | 18,2464 |
+| Modelo s/Umidade (lag = 1)  | 28,2284 | 0,2441   | 22,7946 |
+
+~Tabela:\ Métricas\ do\ modelo\ da\ base\ teste\ (Set-Out-Nov\ de\ 2019).~
 
 ## Referências
 
