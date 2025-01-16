@@ -100,6 +100,11 @@ knitr::include_graphics("segunda_funcao_saida.png")
 knitr::include_graphics("saida_final.png")
 ```
 
+## Memória Longa de Curto Prazo (LSTM)
+
+- Existem outras variações do LSTM;
+- Com propriedades diferentes que podem ser avaliadas.
+
 ## Base de Dadoss
 
 -   Variável Alvo: Número de Internações por Doenças do Aparelho Respiratório;
@@ -335,7 +340,9 @@ g_LSTM_lag1
 
 ## Conclusão
 
-
+- A umidade não alterou significativamente as estimativas e previsão do modelo, talvez devido ao seu comportamento problemático em 2018;
+- Mesmo com diversos modelos testados, foi difícil realizar uma boa previsão;
+- Pode-se, no futuro, explorar mais a ideia de $lags$ e como eles impactam as variáveis do modelo e também avaliar o impacto de outras covariáveis como precipitação e outros poluentes.
 
 ## Referências
 
