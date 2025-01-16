@@ -417,7 +417,7 @@
 <h2>Base de Dadoss</h2>
 <ul>
 <li>Variável Alvo: Número de Internações por Doenças do Aparelho Respiratório;</li>
-<li>Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média (Descartada);</li>
+<li>Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média;</li>
 <li>Fontes: DATASUS e Sistema Integrado de Serviços Ambientais (SISAM);</li>
 <li>Frequência: Diária;</li>
 <li>Período: 01/01/2018 a 30/11/2019.</li>
@@ -446,9 +446,112 @@
 
 <img data-src="apresentacao_files/figure-revealjs/unnamed-chunk-11-1.png" style="width:100.0%" data-fig-pos="H" class="r-stretch"></section></section>
 <section>
-<section id="conclusão" class="title-slide slide level1 center">
-<h1>Conclusão</h1>
+<section id="resultados-1" class="title-slide slide level1 center">
+<h1>Resultados</h1>
 
+</section>
+<section id="resultados-2" class="slide level2">
+<h2>Resultados</h2>
+
+<img data-src="apresentacao_files/figure-revealjs/unnamed-chunk-12-1.png" style="width:100.0%" data-fig-pos="H" class="r-stretch"></section>
+<section id="resultados-3" class="slide level2">
+<h2>Resultados</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Modelo</th>
+<th>RMSE</th>
+<th>Rsquared</th>
+<th>MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Modelo Completo (lag = 3)</td>
+<td>42,1282</td>
+<td>0,0933</td>
+<td>33,7120</td>
+</tr>
+<tr class="even">
+<td>Modelo s/ Umidade (lag = 3)</td>
+<td>42,1282</td>
+<td>0,0933</td>
+<td>33,7120</td>
+</tr>
+<tr class="odd">
+<td>Modelo s/Umidade (lag = 7)</td>
+<td>55,9767</td>
+<td>0,0079</td>
+<td>42,6284</td>
+</tr>
+<tr class="even">
+<td>Modelo s/Umidade (lag = 1)</td>
+<td>45,8886</td>
+<td>0,0805</td>
+<td>38,0505</td>
+</tr>
+</tbody>
+</table>
+<p><sub>Tabela:&nbsp;Métricas&nbsp;do&nbsp;modelo&nbsp;da&nbsp;base&nbsp;treino&nbsp;(Jan&nbsp;de&nbsp;2018&nbsp;a&nbsp;Ago&nbsp;de&nbsp;2019).</sub></p>
+</section>
+<section id="resultados-4" class="slide level2">
+<h2>Resultados</h2>
+
+<img data-src="apresentacao_files/figure-revealjs/unnamed-chunk-13-1.png" style="width:100.0%" data-fig-pos="H" class="r-stretch"></section>
+<section id="resultados-5" class="slide level2">
+<h2>Resultados</h2>
+
+<img data-src="apresentacao_files/figure-revealjs/unnamed-chunk-14-1.png" style="width:100.0%" data-fig-pos="H" class="r-stretch"></section>
+<section id="resultados-6" class="slide level2">
+<h2>Resultados</h2>
+
+<img data-src="apresentacao_files/figure-revealjs/unnamed-chunk-15-1.png" style="width:100.0%" data-fig-pos="H" class="r-stretch"></section>
+<section id="resultados-7" class="slide level2">
+<h2>Resultados</h2>
+
+<img data-src="apresentacao_files/figure-revealjs/unnamed-chunk-16-1.png" style="width:100.0%" data-fig-pos="H" class="r-stretch"></section>
+<section id="resultados-8" class="slide level2">
+<h2>Resultados</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Modelo</th>
+<th>RMSE</th>
+<th>Rsquared</th>
+<th>MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Modelo Completo (lag = 3)</td>
+<td>25,6221</td>
+<td>0,3163</td>
+<td>20,0272</td>
+</tr>
+<tr class="even">
+<td>Modelo s/ Umidade (lag = 3)</td>
+<td>25,6221</td>
+<td>0,3163</td>
+<td>20,0272</td>
+</tr>
+<tr class="odd">
+<td>Modelo s/Umidade (lag = 7)</td>
+<td>23,0609</td>
+<td>0,4388</td>
+<td>18,2464</td>
+</tr>
+<tr class="even">
+<td>Modelo s/Umidade (lag = 1)</td>
+<td>28,2284</td>
+<td>0,2441</td>
+<td>22,7946</td>
+</tr>
+</tbody>
+</table>
+<p><sub>Tabela:&nbsp;Métricas&nbsp;do&nbsp;modelo&nbsp;da&nbsp;base&nbsp;teste&nbsp;(Set-Out-Nov&nbsp;de&nbsp;2019).</sub></p>
+</section>
+<section id="conclusão" class="slide level2">
+<h2>Conclusão</h2>
 </section>
 <section id="referências" class="slide level2 smaller scrollable">
 <h2>Referências</h2>

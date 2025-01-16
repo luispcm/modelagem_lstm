@@ -103,7 +103,7 @@ knitr::include_graphics("saida_final.png")
 ## Base de Dadoss
 
 -   Variável Alvo: Número de Internações por Doenças do Aparelho Respiratório;
--   Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média (Descartada);
+-   Covariáveis: Material Particulado Fino, Temperatura Média e Umidade Relativa do Ar Média;
 -   Fontes: DATASUS e Sistema Integrado de Serviços Ambientais (SISAM);
 -   Frequência: Diária;
 -   Período: 01/01/2018 a 30/11/2019.
@@ -236,6 +236,8 @@ ggplot(base_resp,
 
 # Resultados
 
+## Resultados
+
 ```{r, fig.pos='H', out.width="100%"}
 #| echo: false
 #| warning: false
@@ -245,6 +247,8 @@ load("LSTM_intenacao.Rdata")
 g_treino_completo
 ```
 
+## Resultados
+
 | Modelo                      | RMSE    | Rsquared | MAE     |
 |-----------------------------|---------|----------|---------|
 | Modelo Completo (lag = 3)   | 42,1282 | 0,0933   | 33,7120 |
@@ -252,8 +256,9 @@ g_treino_completo
 | Modelo s/Umidade (lag = 7)  | 55,9767 | 0,0079   | 42,6284 |
 | Modelo s/Umidade (lag = 1)  | 45,8886 | 0,0805   | 38,0505 |
 
-~Tabela:\ Métricas\ do\ modelo\ da\ base\ treino\ (Jan\ de\ 2018\ a\ Ago\ de\ 2019).~
+~Tabela: Métricas do modelo da base treino (Jan de 2018 a Ago de 2019).~
 
+## Resultados
 ```{r, fig.pos='H', out.width="100%"}
 #| echo: false
 #| warning: false
@@ -267,10 +272,57 @@ base = readRDS("base_resp.rds")
 load("LSTM_intenacao.Rdata")
 
 g_LSTM_completo
+```
+
+## Resultados
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+base = readRDS("base_resp.rds")
+
+# Base de Dados Treino e Teste
+# Teste: 3 meses finais da base original (Set-Out-Nov)
+load("LSTM_intenacao.Rdata")
+
 g_LSTM_sUmidade
+```
+
+## Resultados
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+base = readRDS("base_resp.rds")
+
+# Base de Dados Treino e Teste
+# Teste: 3 meses finais da base original (Set-Out-Nov)
+load("LSTM_intenacao.Rdata")
+
 g_LSTM_lag7
+```
+
+## Resultados
+```{r, fig.pos='H', out.width="100%"}
+#| echo: false
+#| warning: false
+#| message: false
+
+
+base = readRDS("base_resp.rds")
+
+# Base de Dados Treino e Teste
+# Teste: 3 meses finais da base original (Set-Out-Nov)
+load("LSTM_intenacao.Rdata")
+
 g_LSTM_lag1
 ```
+
+## Resultados
 
 | Modelo                      | RMSE    | Rsquared | MAE     |
 |-----------------------------|---------|----------|---------|
@@ -279,7 +331,11 @@ g_LSTM_lag1
 | Modelo s/Umidade (lag = 7)  | 23,0609 | 0,4388   | 18,2464 |
 | Modelo s/Umidade (lag = 1)  | 28,2284 | 0,2441   | 22,7946 |
 
-~Tabela:\ Métricas\ do\ modelo\ da\ base\ teste\ (Set-Out-Nov\ de\ 2019).~
+~Tabela: Métricas do modelo da base teste (Set-Out-Nov de 2019).~
+
+## Conclusão
+
+
 
 ## Referências
 
