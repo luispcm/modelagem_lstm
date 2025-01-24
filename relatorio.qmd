@@ -135,9 +135,11 @@ ggplot(base_resp,
                             to = max(base_resp$DT_INTER),
                             by = "1 month"))
 ```
+
 Nota-se que os períodos de maiores concentrações dos poluentes estão nos meios dos anos.
 
 Abaixo temos a umidade relativa do ar:
+
 ```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
@@ -162,9 +164,11 @@ ggplot(base_resp,
                             to = max(base_resp$DT_INTER),
                             by = "1 month"))
 ```
+
 Com altas porcentagens principalmente no ano de 2018, com um comportamento atípico.
 
 Já para a temperatura média diária, temos:
+
 ```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
@@ -189,9 +193,11 @@ ggplot(base_resp,
                             to = max(base_resp$DT_INTER),
                             by = "1 month"))
 ```
+
 Na Figura acima, podemos ver claramente os períodos de inverno e verão de acordo com o comportamento bem definido.
 
-Por fim, podemos visualizar essas variáveis em um mesmo gráfico, onde as séries estão padronizadas pelos seus máximos, dessa forma elas ficam no intervalo [0,1]:
+Por fim, podemos visualizar essas variáveis em um mesmo gráfico, onde as séries estão padronizadas pelos seus máximos, dessa forma elas ficam no intervalo \[0,1\]:
+
 ```{r, fig.pos='H', out.width="90%"}
 #| echo: false
 #| warning: false
@@ -228,7 +234,59 @@ ggplot(base_resp,
                                 "Umidade Relativa do Ar (%)",
                                 "N° de internações"))
 ```
+
+## LSTM
+
+| Ajuste do LSTM | lag | RMSE | $$ 
+                                R^2 
+                                $$ | MAE |
+|:----------------------------:|:------------:|:------------:|:------------:|::|
+| **Ajuste 1** | 1 | 40,2737 | 0,1481 | 32,4104 |
+| **Ajuste 2** | 2 | 37,2511 | 0,3246 | 30,1603 |
+| **Ajuste 3** | 3 | 37,2921 | 0,2981 | 30,4152 |
+| **Ajuste 4** | **7** | **33,2105** | **0,4340** | **26,4082** |
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig.width: 10
+#| fig.height: 8
+load("LSTM.Rdata")
+
+par(mfrow = c(2, 2)) 
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
+points(x= base$DT_INTER[1:N],y=pred,col="red",type = "l",) # Mod 1
+legend("topright", legend = c("Observado", "Previsão Ajuste 1"), col = c("black", "red"), lty = 1, cex = 0.8)
+
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
+points(x=base$DT_INTER[1:N],y=pred2,col="blue",type = "l") # Mod 2
+legend("topright", legend = c("Observado", "Previsão Ajuste 2"), col = c("black", "blue"), lty = 1, cex = 0.8)
+
+
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
+points(x=base$DT_INTER[1:N],y=pred3,col="orange",type = "l")
+legend("topright", legend = c("Observado", "Previsão Ajuste 3"), col = c("black", "orange"), lty = 1, cex = 0.8)
+
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
+points(x=base$DT_INTER[1:N],y=pred4,col="green",type = "l")
+legend("topright", legend = c("Observado", "Previsão Ajuste 4"), col = c("black", "green"), lty = 1, cex = 0.8)
+
+```
+
+Pelo grafico e métricas calculadas pelas previsões obtidas pelos respectivos ajustes do modelo LSTM, pode-se reparar que o modelo ajustado que apresentou **maior capacidade preditiva** do número de internações foi o modelo ajustado pelo **Ajuste 4**, com um l**ag = 7**. Percebe-se também que a dimiuição do lag utilizado no ajuste do modelo resultou em uma menor performance apresentada pelo modelo LSTM, demonstrando que para estimar o número de internação em um determinado momento deve-se analisar o número de internação e suas covariáveis antes desse momento. Devido ao melhor ajuste possuir um lag = 7, analisa-se os dados disponíveis em 7 dias atras do momento de previsão de interesse.
+
 # Conclusão
+
+O presente estudo demonstrou a eficácia do modelo LSTM na previsão do número de internações hospitalares, evidenciando a importância de ajustar adequadamente os parâmetros do modelo para alcançar melhores resultados preditivos. A análise dos diferentes ajustes indicou que a escolha do lag desempenha um papel crucial no desempenho do modelo, com o ajuste que utilizou um lag de 7 dias (Ajuste 4) apresentando a maior capacidade preditiva.
+
+Além disso, os resultados reforçam a relevância de considerar o histórico temporal das internações e suas covariáveis para compreender padrões e tendências nos dados. Esse aspecto é essencial para o desenvolvimento de estratégias preditivas robustas e para subsidiar decisões informadas no planejamento e gerenciamento de recursos hospitalares.
+
+Portanto, conclui-se que modelos baseados em redes neurais recorrentes, como o LSTM, são ferramentas promissoras para aplicação em problemas de séries temporais na área da saúde, possibilitando não apenas maior precisão nas previsões, mas também oferecendo suporte valioso para a melhoria da gestão hospitalar e a otimização de políticas públicas voltadas ao atendimento de demandas futuras.
 
 # Referências
 
