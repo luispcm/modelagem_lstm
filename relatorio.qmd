@@ -237,14 +237,14 @@ ggplot(base_resp,
 
 ## LSTM
 
-| Ajuste do LSTM | lag | RMSE | $$ 
-                                R^2 
-                                $$ | MAE |
-|:----------------------------:|:------------:|:------------:|:------------:|::|
-| **Ajuste 1** | 1 | 40,2737 | 0,1481 | 32,4104 |
-| **Ajuste 2** | 2 | 37,2511 | 0,3246 | 30,1603 |
-| **Ajuste 3** | 3 | 37,2921 | 0,2981 | 30,4152 |
-| **Ajuste 4** | **7** | **33,2105** | **0,4340** | **26,4082** |
+| **Modelo Ajustado** |  lag  |   RMSE    |  $R^2$   |    MAE    |
+|:-------------------:|:-----:|:---------:|:--------:|:---------:|
+|    **Ajuste 1**     |   1   |   40,27   |   0,14   |   32,41   |
+|    **Ajuste 2**     |   2   |   37,25   |   0,32   |   30,16   |
+|    **Ajuste 3**     |   3   |   37,29   |   0,29   |   30,41   |
+|    **Ajuste 4**     | **7** | **33,21** | **0,43** | **26,40** |
+
+| 
 
 ```{r}
 #| echo: false
@@ -278,7 +278,7 @@ legend("topright", legend = c("Observado", "Previsão Ajuste 4"), col = c("black
 
 ```
 
-Pelo grafico e métricas calculadas pelas previsões obtidas pelos respectivos ajustes do modelo LSTM, pode-se reparar que o modelo ajustado que apresentou **maior capacidade preditiva** do número de internações foi o modelo ajustado pelo **Ajuste 4**, com um l**ag = 7**. Percebe-se também que a dimiuição do lag utilizado no ajuste do modelo resultou em uma menor performance apresentada pelo modelo LSTM, demonstrando que para estimar o número de internação em um determinado momento deve-se analisar o número de internação e suas covariáveis antes desse momento. Devido ao melhor ajuste possuir um lag = 7, analisa-se os dados disponíveis em 7 dias atras do momento de previsão de interesse.
+Pelo grafico e métricas calculadas pelas previsões obtidas pelos respectivos ajustes do modelo LSTM, pode-se reparar que o modelo ajustado que apresentou **maior capacidade preditiva** do número de internações foi o modelo ajustado pelo **Ajuste 4**, com um l**ag = 7**. Percebe-se também que a dimiuição do lag utilizado no ajuste do modelo resultou em uma menor performance apresentada pelo modelo LSTM, demonstrando que para estimar o número de internação em um determinado momento deve-se analisar o número de internação e suas covariáveis antes desse momento. Devido ao melhor ajuste possuir um lag = 7, analisa-se os dados disponíveis em 7 dias atras do momento de previsão de interesse
 
 # Conclusão
 

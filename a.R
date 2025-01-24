@@ -42,17 +42,17 @@ lstm <- ts.lstm(
 
 
 #prevendo hoje para amanhã
-t = k + 1
-predict(lstm,
-        horizon = 1,
-        xreg = X[(1:(t-1)),],
-        ts = Y[(1:(t-1))],
-        xreg.new = X[t,])
+#t = k + 1
+#predict(lstm,
+#        horizon = 1,
+#        xreg = X[(1:(t-1)),],
+ #       ts = Y[(1:(t-1))],
+ #       xreg.new = X[t,])
 
 #média movel de hoje para amanha
 #considerando janela igual a lag
-mean(Y[(t-lag):(t-1)])
-Y[t]
+#mean(Y[(t-lag):(t-1)])
+#Y[t]
 
 #prevendo de um dia ptara o seguinte
 #para os útlimos 31 dias
@@ -83,8 +83,8 @@ lstm2 <- ts.lstm(
   BatchSize = 64,RandomState = 122054005)
 
 lag2 = 2
-pred2 = Y[1:lag2]
-for(t in (lag2+1):N){
+pred2 = Y[1:(lag2+1)]
+for(t in (lag2+2):N){
   pred2 = c(pred2,
            predict(lstm2, 
                    horizon = 1, 
@@ -108,8 +108,8 @@ lstm3 <- ts.lstm(
   BatchSize = 64,RandomState = 122054005)
 
 lag3 = 3
-pred3 = Y[1:lag3]
-for(t in (lag3+1):N){
+pred3 = Y[1:(lag3+1)]
+for(t in (lag3+2):N){
   pred3 = c(pred3,
             predict(lstm3, 
                     horizon = 1, 
@@ -133,8 +133,8 @@ lstm4 <- ts.lstm(
   BatchSize = 64,RandomState = 122054005)
 
 lag4 = 7
-pred4 = Y[1:lag4]
-for(t in (lag4+1):N){
+pred4 = Y[1:(lag4+1)]
+for(t in (lag4+2):N){
   pred4 = c(pred4,
             predict(lstm4, 
                     horizon = 1, 
@@ -147,13 +147,36 @@ for(t in (lag4+1):N){
 
 
 # Verificando no grafico
+par(mfrow = c(2, 2)) 
 plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
 points(x= base$DT_INTER[1:N],y=pred,col="red",type = "l",) # Mod 1
+legend("topright", legend = c("Observado", "Previsão Ajuste 1"), col = c("black", "red"), lty = 1, cex = 0.8)
+
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
 points(x=base$DT_INTER[1:N],y=pred2,col="blue",type = "l") # Mod 2
+legend("topright", legend = c("Observado", "Previsão Ajuste 2"), col = c("black", "blue"), lty = 1, cex = 0.8)
+
+
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
 points(x=base$DT_INTER[1:N],y=pred3,col="orange",type = "l")
+legend("topright", legend = c("Observado", "Previsão Ajuste 3"), col = c("black", "orange"), lty = 1, cex = 0.8)
+
+plot(x = base$DT_INTER[1:N],y = Y[1:N],type = "l",ylab = "N internação",xlab = "data")
+abline(v = base$DT_INTER[k], col = "purple", type = "l", lwd = 2)
 points(x=base$DT_INTER[1:N],y=pred4,col="green",type = "l")
+legend("topright", legend = c("Observado", "Previsão Ajuste 4"), col = c("black", "green"), lty = 1, cex = 0.8)
+
+
 
 postResample(pred,Y[1:N])
 postResample(pred2,Y[1:N])
 postResample(pred3,Y[1:N])
 postResample(pred4,Y[1:N])
+
+# Save
+load("LSTM.Rdata")
+save(base,pred,pred2,pred3,pred4,X,Y,k,N,file = "LSTM.Rdata")
+
