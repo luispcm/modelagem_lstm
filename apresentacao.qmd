@@ -70,6 +70,8 @@ knitr::include_graphics("interconexao_info.png")
 knitr::include_graphics("primeira_funcao.png")
 ```
 
+# $f_t = \sigma(w_f[h_{t-1}, x_t] + \theta_f)$
+
 ## Memória Longa de Curto Prazo (LSTM)
 
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
@@ -80,6 +82,9 @@ knitr::include_graphics("primeira_funcao.png")
 knitr::include_graphics("segunda_funcao.png")
 ```
 
+# $\tilde{C_t} = tanh(w_C[h_{t-1},x_t] + \theta_C)$
+# $i_t = \sigma(w_i[h_{t-1},x_t] + \theta_i)$
+
 ## Memória Longa de Curto Prazo (LSTM)
 
 ```{r, fig.cap="Fonte: https://colah.github.io/posts/2015-08-Understanding-LSTMs/", fig.pos='H'}
@@ -89,6 +94,8 @@ knitr::include_graphics("segunda_funcao.png")
 
 knitr::include_graphics("segunda_funcao_saida.png")
 ```
+
+# $C_t = f_tC_{t-1} + i_t\tilde{C_t}$
 
 ## Memória Longa de Curto Prazo (LSTM)
 

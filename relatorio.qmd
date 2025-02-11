@@ -108,7 +108,7 @@ Ademais, na base de dados, o $PM_{2.5}$ era registrado a cada 12 horas em 2019 p
 
 Abaixo pode ser visto o comportamento do número de internações de pessoas com doenças do aparelho respiratório.
 
-```{r, fig.pos='H', out.width="90%"}
+```{r, fig.pos='H', out.width="90%", fig.align='center'}
 #| echo: false
 #| warning: false
 #| message: false
@@ -140,7 +140,7 @@ Nota-se que os períodos de maiores concentrações dos poluentes estão nos mei
 
 Abaixo temos a umidade relativa do ar:
 
-```{r, fig.pos='H', out.width="90%"}
+```{r, fig.pos='H', out.width="90%", fig.align='center'}
 #| echo: false
 #| warning: false
 #| message: false
@@ -169,7 +169,7 @@ Com altas porcentagens principalmente no ano de 2018, com um comportamento atíp
 
 Já para a temperatura média diária, temos:
 
-```{r, fig.pos='H', out.width="90%"}
+```{r, fig.pos='H', out.width="90%", fig.align='center'}
 #| echo: false
 #| warning: false
 #| message: false
@@ -198,7 +198,7 @@ Na Figura acima, podemos ver claramente os períodos de inverno e verão de acor
 
 Por fim, podemos visualizar essas variáveis em um mesmo gráfico, onde as séries estão padronizadas pelos seus máximos, dessa forma elas ficam no intervalo \[0,1\]:
 
-```{r, fig.pos='H', out.width="90%"}
+```{r, fig.pos='H', out.width="90%", fig.align='center'}
 #| echo: false
 #| warning: false
 #| message: false
@@ -278,7 +278,7 @@ legend("topright", legend = c("Observado", "Previsão Ajuste 4"), col = c("black
 
 ```
 
-Pelo grafico e métricas calculadas pelas previsões obtidas pelos respectivos ajustes do modelo LSTM, pode-se reparar que o modelo ajustado que apresentou **maior capacidade preditiva** do número de internações foi o modelo ajustado pelo **Ajuste 4**, com um l**ag = 7**. Percebe-se também que a dimiuição do lag utilizado no ajuste do modelo resultou em uma menor performance apresentada pelo modelo LSTM, demonstrando que para estimar o número de internação em um determinado momento deve-se analisar o número de internação e suas covariáveis antes desse momento. Devido ao melhor ajuste possuir um lag = 7, analisa-se os dados disponíveis em 7 dias atras do momento de previsão de interesse
+Pelo grafico e métricas calculadas pelas previsões obtidas pelos respectivos ajustes do modelo LSTM, pode-se reparar que o modelo ajustado que apresentou **maior capacidade preditiva** do número de internações foi o modelo ajustado pelo **Ajuste 4**, com um l**ag = 7**. Percebe-se também que a dimiuição do lag utilizado no ajuste do modelo resultou em uma menor performance apresentada pelo modelo LSTM, demonstrando que para estimar o número de internação em um determinado momento deve-se analisar o número de internação e suas covariáveis antes desse momento. Devido ao melhor ajuste possuir um lag = 7, analisa-se os dados disponíveis em 7 dias atrás do momento de previsão de interesse
 
 # Conclusão
 

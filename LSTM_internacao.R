@@ -62,7 +62,7 @@ set.seed(122054005)
 lstm_sUmidade <- ts.lstm(
   ts = Y[1:t],
   xreg = X[1:t,],
-  tsLag = lag,
+  tsLag = 0,
   xregLag = lag,
   LSTMUnits = c(40,20), 
   ScaleInput = "minmax",
